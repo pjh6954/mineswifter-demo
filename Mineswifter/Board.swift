@@ -31,14 +31,14 @@ class Board {
         for row in 0 ..< size {
             for col in 0 ..< size {
                 squares[row][col].isRevealed = false
-                self.calculateIsMineLocationForSquare(squares[row][col])
+                self.calculateIsMineLocationForSquare(square: squares[row][col])
             }
         }
         
         // count number of neighboring squares
         for row in 0 ..< size {
             for col in 0 ..< size {
-                self.calculateNumNeighborMinesForSquare(squares[row][col])
+                self.calculateNumNeighborMinesForSquare(square: squares[row][col])
             }
         }
     }
@@ -49,13 +49,13 @@ class Board {
     
     func calculateNumNeighborMinesForSquare(square : Square) {
         // first get a list of adjacent squares
-        let neighbors = getNeighboringSquares(square)
+        let neighbors = getNeighboringSquares(square: square)
         var numNeighboringMines = 0
         
         // for each neighbor with a mine, add 1 to this square's count
         for neighborSquare in neighbors {
             if neighborSquare.isMineLocation {
-                numNeighboringMines++
+                numNeighboringMines += 1
             }
         }
         square.numNeighboringMines = numNeighboringMines
@@ -72,7 +72,7 @@ class Board {
         
         for (rowOffset,colOffset) in adjacentOffsets {
             // getTileAtLocation might return a Square, or it might return nil, so use the optional datatype "?"
-            let optionalNeighbor:Square? = getTileAtLocation(square.row+rowOffset, col: square.col+colOffset)
+            let optionalNeighbor:Square? = getTileAtLocation(row: square.row+rowOffset, col: square.col+colOffset)
             // only evaluates true if the optional tile isn't nil
             if let neighbor = optionalNeighbor {
                 neighbors.append(neighbor)

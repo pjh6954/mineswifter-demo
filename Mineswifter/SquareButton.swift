@@ -18,9 +18,13 @@ class SquareButton : UIButton {
         
         let x = CGFloat(self.square.col) * squareSize
         let y = CGFloat(self.square.row) * squareSize
-        let squareFrame = CGRectMake(x, y, squareSize, squareSize)
+        let squareFrame = CGRect(x: x, y: y, width: squareSize, height: squareSize)//CGRectMake(x, y, squareSize, squareSize)
         
         super.init(frame: squareFrame)        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func getLabelText() -> String {

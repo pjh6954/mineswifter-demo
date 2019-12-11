@@ -30,15 +30,15 @@ class ViewController: UIViewController {
             self.timeLabel.sizeToFit()
         }
     }
-    var oneSecondTimer:NSTimer?
+    var oneSecondTimer:Timer?
     
 //MARK: Initialization
     
-    init(coder aDecoder: NSCoder!)
+    required init(coder aDecoder: NSCoder)
     {
         self.board = Board(size: BOARD_SIZE)
         
-        super.init(coder: aDecoder)
+        super.init(coder: aDecoder)!
     }
     
     override func viewDidLoad() {
@@ -58,9 +58,9 @@ class ViewController: UIViewController {
                 let squareSize:CGFloat = self.boardView.frame.width / CGFloat(BOARD_SIZE)
                 
                 let squareButton = SquareButton(squareModel: square, squareSize: squareSize);
-                squareButton.setTitle("[x]", forState: .Normal)
-                squareButton.setTitleColor(UIColor.darkGrayColor(), forState: .Normal)
-                squareButton.addTarget(self, action: "squareButtonPressed:", forControlEvents: .TouchUpInside)
+                squareButton.setTitle("[x]", for: .normal)
+                squareButton.setTitleColor(UIColor.darkGray, for: .normal)
+                squareButton.addTarget(self, action: #selector(squareButtonPressed(sender:)), for: .touchUpInside)//"squareButtonPressed:"
                 self.boardView.addSubview(squareButton)
                 
                 self.squareButtons.append(squareButton)
@@ -73,7 +73,7 @@ class ViewController: UIViewController {
         self.board.resetBoard()
         // iterates through each button and resets the text to the default value
         for squareButton in self.squareButtons {
-            squareButton.setTitle("[x]", forState: .Normal)
+            squareButton.setTitle("[x]", for: .normal)
         }
     }
     
@@ -82,11 +82,11 @@ class ViewController: UIViewController {
         self.resetBoard()
         self.timeTaken = 0
         self.moves = 0
-        self.oneSecondTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("oneSecond"), userInfo: nil, repeats: true)
+        self.oneSecondTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(oneSecond), userInfo: nil, repeats: true)
     }
     
-    func oneSecond() {
-        self.timeTaken++
+    @objc func oneSecond() {
+        self.timeTaken += 1
     }
 
     override func didReceiveMemoryWarning() {
@@ -97,19 +97,19 @@ class ViewController: UIViewController {
 //MARK: Button Actions
     
     @IBAction func newGamePressed() {
-        println("new game")
+        print("new game")
         self.endCurrentGame()
         self.startNewGame()
     }
     
-    func squareButtonPressed(sender: SquareButton) {
+    @objc func squareButtonPressed(sender: SquareButton) {
 //        println("Pressed row:\(sender.square.row), col:\(sender.square.col)")
 //        sender.setTitle("", forState: .Normal)
         
         if !sender.square.isRevealed {
             sender.square.isRevealed = true
-            sender.setTitle("\(sender.getLabelText())", forState: .Normal)
-            self.moves++
+            sender.setTitle("\(sender.getLabelText())", for: .normal)
+            self.moves += 1
         }
         
         if sender.square.isMineLocation {
@@ -120,22 +120,32 @@ class ViewController: UIViewController {
     func minePressed() {
         self.endCurrentGame()
         // show an alert when you tap on a mine
-        var alertView = UIAlertView()
-        alertView.addButtonWithTitle("New Game")
-        alertView.title = "BOOM!"
-        alertView.message = "You tapped on a mine."
-        alertView.show()
-        alertView.delegate = self
+//        let alertView = UIAlertView()
+//        alertView.addButton(withTitle: "New Game")
+//        alertView.title = "BOOM!"
+//        alertView.message = "You tapped on a mine."
+//        alertView.show()
+//        alertView.delegate = self
+        let alertView = UIAlertController(title: "BOOM!", message: "You tapped on a mine", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "New Game", style: .default) { (alertAction) in
+            self.startNewGame()
+        }
+        alertView.addAction(okAction)
+        self.present(alertView, animated: true) {
+            //
+        }
     }
     
-    func alertView(View: UIAlertView!, clickedButtonAtIndex buttonIndex: Int) {
-        //start new game when the alert is dismissed
-        self.startNewGame()
-    }
+//    func alertView(View: UIAlertView!, clickedButtonAtIndex buttonIndex: Int) {
+//        //start new game when the alert is dismissed
+//        self.startNewGame()
+//    }
     
     func endCurrentGame() {
-        self.oneSecondTimer!.invalidate()
-        self.oneSecondTimer = nil
+        if oneSecondTimer != nil{
+            self.oneSecondTimer!.invalidate()
+            self.oneSecondTimer = nil
+        }
     }
 
 
