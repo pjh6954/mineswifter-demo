@@ -6,7 +6,7 @@ This is the source code for the MakeGamesWithUs minesweeper app tutorial, which 
 ![Mineswifter App Screenshot](http://gotlightgame.com/Mineswifter/swift_tut_09.png)
 
 ==================
-
+[Edited by pjh6954]
 Original git : https://github.com/Benolds/mineswifter-demo
 
 Support swift 5 version.
